@@ -9,12 +9,12 @@ import { useState } from "react";
 const EditPrompt = () => {
     const router = useRouter();
     const search = useSearchParams();
-    const promptId = search.get('id');
+    const promptId = search.get("id");
 
     const [submit, setSubmit] = useState(false);
     const [post, setPost] = useState({
-        prompt: '',
-        tag: '',
+        prompt: "",
+        tag: "",
     });
 
     useEffect(() => {
@@ -24,11 +24,11 @@ const EditPrompt = () => {
 
             setPost({
                 prompt: data.prompt,
-                tag: data.tag
+                tag: data.tag,
             });
-        }
+        };
 
-        if(promptId) getDetails();
+        if (promptId) getDetails();
     }, [promptId]);
 
     const updatePrompt = async (e) => {
@@ -37,7 +37,7 @@ const EditPrompt = () => {
 
         setSubmit(true);
 
-        if(!promptId) return alert("Prompt ID not found :(");
+        if (!promptId) return alert("Prompt ID not found :(");
 
         try {
             const response = await fetch(`/api/prompt/${promptId}`, {
@@ -48,8 +48,8 @@ const EditPrompt = () => {
                 }),
             });
 
-            if(response.ok) {
-                router.push('/');
+            if (response.ok) {
+                router.push("/");
             }
         } catch (error) {
             console.log(error);
@@ -57,18 +57,16 @@ const EditPrompt = () => {
         } finally {
             setSubmit(false);
         }
-    }
+    };
 
     return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <Form
-                type="Edit"
-                post={post}
-                setPost={setPost}
-                submit={submit}
-                handleSubmit={updatePrompt}
-            />
-        </Suspense>
+        <Form 
+            type="Edit" 
+            post={post} 
+            setPost={setPost} 
+            submit={submit} 
+            handleSubmit={updatePrompt} 
+        />
     );
 };
 
