@@ -2,9 +2,15 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 
 const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
     const [copied, setCopied] = useState("");
+
+    const { data: session } = useSession();
+    const pathName = usePathname();
+    const router = useRouter();
 
     const handleCopy = () => {
       setCopied(post.prompt);
@@ -14,10 +20,16 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
       setTimeout(() => setCopied(""), 3000);
     }
 
+    const handleClickProfile = () => {
+        if(post.creator._id === session?.user.id) return router.push('/profile');
+        router.push(`/profile/${post.creator._id}?name=${post.creator.username}`);
+    }
+
     return (
         <div className="prompt_card">
             <div className="flex justify-between items-start gap-5">
-                <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer">
+                <div className="flex-1 flex justify-start items-center gap-3 cursor-pointer"
+                onClick={handleClickProfile}>
                     <Image
                         src={post.creator.image}
                         alt="user_image"
@@ -46,8 +58,28 @@ const PromptCard = ({ post, handleTagClick, handleEdit, handleDelete }) => {
                 className="font-inter text-sm blue_gradient cursor-pointer"
                 onClick={() => handleTagClick && handleTagClick(post.tag)}
             >
-                {post.tag}
+                #{post.tag}
             </p>
+
+            {session?.user.id === post.creator._id &&
+            pathName === '/profile' && (
+                <div className="mt-5 flex-center gap-4 border-t border-gray-100 pt-3">
+                    <p 
+                        className="font-inter text-sm 
+                        green_gradient cursor-pointer"
+                        onClick={handleEdit}
+                    >
+                        Edit
+                    </p>
+                    <p 
+                        className="font-inter text-sm 
+                        orange_gradient cursor-pointer"
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </p>
+                </div>
+            )}
         </div>
     );
 };
