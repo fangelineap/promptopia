@@ -2,7 +2,6 @@
 
 import Form from "@components/Form";
 
-import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { useState } from "react";
